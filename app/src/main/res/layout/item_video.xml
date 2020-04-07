@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="2dp"
+    android:id="@+id/btn_item">
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="h,16:9"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/loading" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="#90000000"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="3dp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="@+id/iv_cover" />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/btn_play"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:iiv_color="@color/color_favorite_selector"
+        app:iiv_icon="faw-play-circle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.2" />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/btn_preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="6dp"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:iiv_color="@color/color_favorite_selector"
+        app:iiv_icon="faw-eye"
+        android:layout_marginStart="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.12" />
+
+    <com.mikepenz.iconics.view.IconicsImageView
+        android:id="@+id/btn_favorite"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="11dp"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        app:iiv_color="@color/color_favorite_selector"
+        app:iiv_icon="faw-heart"
+        android:layout_marginStart="5dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintDimensionRatio="h,1:1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.12" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:background="@color/textViewBg"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="3dp"
+        android:textColor="@color/white"
+        android:layout_marginEnd="6dp"
+        android:layout_marginTop="6dp"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

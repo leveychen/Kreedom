@@ -1,0 +1,15 @@
+<resources>
+    <string-array name="change_log">
+        <item>更新日志</item>
+        <item>3.1.1</item>
+        <item>1.修复自拍改版无法加载列表问题</item>
+        <item>3.1.0</item>
+        <item>1.修复Android 10视频加载问题</item>
+        <item>3.0.0</item>
+        <item>1.船新版本,船新体验</item>
+    </string-array>
+
+    <string-array name="settings">
+        <item>清理缓存</item>
+    </string-array>
+</resources>

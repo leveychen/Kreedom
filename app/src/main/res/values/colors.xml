@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#51C4D3</color>
+    <color name="colorPrimaryDark">#EEEEEE</color>
+    <color name="colorAccent">#50AEE1</color>
+    <color name="white">#FFFFFF</color>
+    <color name="cnSkyBlue">#C3D7DF</color>
+    <color name="player_icon_color">#BBFFFFFF</color>
+    <color name="cnRed">#ee3f4d</color>
+    <color name="cnBerlin">#126bae</color>
+    <color name="textViewBg">#90000000</color>
+</resources>

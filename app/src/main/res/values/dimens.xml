@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="material_drawer_item_primary">70dp</dimen>
+    <dimen name="material_drawer_item_primary_icon">120dp</dimen>
+    <dimen name="material_drawer_item_primary_text">20sp</dimen>
+
+    <dimen name="material_drawer_item_secondary">60dp</dimen>
+    <dimen name="material_drawer_item_secondary_icon">60dp</dimen>
+    <dimen name="material_drawer_item_secondary_text">18sp</dimen>
+
+</resources>

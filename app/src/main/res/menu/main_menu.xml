@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="分类按钮"
+        android:id="@+id/category_btn"
+        android:icon="@drawable/menu_category"
+        app:showAsAction="ifRoom" />
+</menu>
