@@ -36,4 +36,18 @@ object Db {
         S.log("first = " + Mo.string(LocalVideo::class.java, video))
         return video
     }
+
+    fun first(url: String): LocalVideo? {
+        val video = LitePal.where("url = ?", url)
+            .findFirst(LocalVideo::class.java)
+        S.log("first = " + Mo.string(LocalVideo::class.java, video))
+        return video
+    }
+
+    fun task(taskId: String): LocalVideo? {
+        val video = LitePal.where("taskId = ? and favoriteType = ?", taskId, "" + FavoriteType.DOWNLOAD.ordinal)
+            .findFirst(LocalVideo::class.java)
+        S.log("task = " + Mo.string(LocalVideo::class.java, video))
+        return video
+    }
 }

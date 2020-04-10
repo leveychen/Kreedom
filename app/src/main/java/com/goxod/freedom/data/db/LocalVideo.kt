@@ -1,8 +1,13 @@
 package com.goxod.freedom.data.db
 
+import com.goxod.freedom.config.type.FavoriteType
+import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.data.event.FavoriteEvent
+import com.goxod.freedom.service.DownloadService
 import com.goxod.freedom.utils.S
+import com.jeffmony.downloader.VideoDownloadManager
+import com.jeffmony.downloader.model.VideoTaskItem
 import org.greenrobot.eventbus.EventBus
 import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
@@ -17,26 +22,35 @@ class LocalVideo(@Column(unique = true, defaultValue = "unknown") var url: Strin
      * 最喜爱的类型，1.收藏，2.下载
      * */
     var favoriteType: Int = 0
-    var taskId: Long = 0 //下载任务id
+    var taskId: String = "" //下载任务id
     var title: String = "" //标题
     var cover: String = "" //封面
     var preview: String = "" //预览
     var video: String = "" //本地视频
     var duration: String = "" //时长
     var definition: String = "" //分辨率
-    var length: Long = 0L //文件长度
-    var complete: Boolean = false //是否下载完成
+    var totalSize: String = "" //文件长度
     var ext: String = "" //其他附属属性
     var time: Long = System.currentTimeMillis() //收藏或下载的时间
 
-    fun saveAndNotify(item: PageEntity) {
-        S.log("saveAndNotify URL  $url")
+    fun saveAndNotify(item: PageEntity,video: GoodsEntity?) {
+        S.log("saveAndNotify URL  $url / favoriteType = $favoriteType")
+        //当视频不为空时判定为下载
+        if(favoriteType == FavoriteType.DOWNLOAD.ordinal && video != null){
+            taskId = video.url
+            S.log("saveAndNotify DOWNLOAD = " + video.url)
+            VideoDownloadManager.getInstance().startDownload(VideoTaskItem(taskId))
+        }
         save()
         notifyItemChanged(favoriteType, item)
     }
 
     fun deleteAndNotify(item: PageEntity) {
         S.log("deleteAndNotify URL = $url")
+        if(this.favoriteType == FavoriteType.DEL_DOWNLOAD.ordinal){
+            VideoDownloadManager.getInstance().deleteVideoTask(taskId,true)
+        }
+        item.goods.clear()
         Db.delete(url)
         notifyItemChanged(-1, item)
     }

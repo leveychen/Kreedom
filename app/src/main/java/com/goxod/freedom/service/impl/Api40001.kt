@@ -65,7 +65,7 @@ class Api40001 : ApiAbstract() {
                     preview =
                         it.select("div[class=img-box cover-md]").select("img").attr("data-preview")
                 }
-                checkFavorite(item)
+                checkFavoriteAndGoods(item)
                 list.add(item)
             }
         } catch (e: Exception) {

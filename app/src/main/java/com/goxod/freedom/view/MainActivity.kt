@@ -24,6 +24,8 @@ import com.goxod.freedom.R
 import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.SecondaryItem
 import com.goxod.freedom.data.adapter.ItemAdapter
+import com.goxod.freedom.data.db.Db
+import com.goxod.freedom.data.db.LocalVideo
 import com.goxod.freedom.data.entity.CategoryEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.data.event.ErrorEvent
@@ -261,7 +263,7 @@ class MainActivity : AppCompatActivity() {
                                 loadAndPlayVideos(view, position, false)
                             }
                             R.id.iv_cover -> {
-                                showImage(view as ImageView, mAdapter.getItem(position).cover)
+                                showImage(view as ImageView,  mAdapter.getItem(position))
                             }
                             R.id.btn_preview -> {
                                 loadAndPlayVideos(view, position, true)
@@ -295,7 +297,13 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun showImage(v: ImageView, url: String) {
+    private fun showImage(v: ImageView, entity: PageEntity) {
+        var url = entity.cover
+        S.log("showImage thumb = $url")
+        if(entity.apiId == ApiItem.API_40001.apiId){
+            url = url.replace("320x180/1","preview")
+            S.log("showImage preview = $url")
+        }
         XPopup.Builder(this@MainActivity)
             .asImageViewer(v, url, object : XPopupImageLoader {
                 override fun loadImage(position: Int, uri: Any, imageView: ImageView) {
@@ -322,6 +330,28 @@ class MainActivity : AppCompatActivity() {
             x_player.setUp(item, true)
             return
         } else {
+            /**
+             * 不为空且文件存在时，直接播放
+             * @see com.goxod.freedom.service.ApiAbstract.checkFavoriteAndGoods
+             */
+            if(item.goods.isNotEmpty()){
+                if(File(item.goods[0].url).exists()) {
+                    VideoActivity.start(this, item, 0)
+                }else{
+                    MaterialDialog(this).show {
+                        title(text = "本地文件损坏")
+                        message(text = "本地文件已被删除或损坏,请重新点击进行在线播放或下载")
+                        noAutoDismiss()
+                        positiveButton(text = "好的"){
+                            LocalVideo(item.url).apply {
+                                favoriteType = -1
+                            }.deleteAndNotify(item)
+                            dismiss()
+                        }
+                    }
+                }
+                return
+            }
             if (!S.checkInternetAvailable(this)) {
                 return
             }

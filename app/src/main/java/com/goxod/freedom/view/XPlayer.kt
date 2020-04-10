@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import com.goxod.freedom.R
 import com.goxod.freedom.config.sp.Sp
+import com.goxod.freedom.config.type.FavoriteType
+import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.entity.SpeedEntity
 import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
@@ -117,7 +119,14 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
                 }
             }
             switch_size.text = currentGoods.definition
-            download.visibility = View.GONE
+            if ("本地" == currentGoods.definition) {
+                S.log("已下载,隐藏下载图标")
+                download.visibility = View.GONE
+            }else{
+                download.visibility = View.VISIBLE
+            }
+            //4/10，v3.2.0 下载功能不完善，暂不支持下载，后续开放
+//            download.visibility = View.GONE
             fullscreen.visibility = View.VISIBLE
             setUpAndStartPlay(currentGoods.url)
         }

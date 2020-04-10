@@ -1,9 +1,9 @@
 package com.goxod.freedom.data.event
 
-import com.goxod.freedom.data.entity.GoodsEntity
-import com.goxod.freedom.data.entity.PageEntity
+import com.goxod.freedom.config.type.DownloadEventType
+import com.jeffmony.downloader.model.VideoTaskItem
 
 data class DownloadEvent(
-    var item: PageEntity,
-    var goods: GoodsEntity
+    var type: DownloadEventType,
+    var task: VideoTaskItem?
 )

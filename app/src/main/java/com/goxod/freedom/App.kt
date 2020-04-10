@@ -2,6 +2,7 @@ package com.goxod.freedom
 
 import android.app.Application
 import com.goxod.freedom.config.sp.Sp
+import com.goxod.freedom.service.DownloadService
 import com.goxod.freedom.utils.AesUtil
 import com.goxod.freedom.utils.S
 import com.mikepenz.iconics.Iconics
@@ -25,7 +26,12 @@ class App : Application() {
         initPlayer()
         initRefreshLayout()
         initDataAndSp()
+        initDownloadService()
         genAes()
+    }
+
+    private fun initDownloadService(){
+        DownloadService.init(this)
     }
 
     private fun initBugly(){

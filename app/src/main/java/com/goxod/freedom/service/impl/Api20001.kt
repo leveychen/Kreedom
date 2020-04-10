@@ -71,7 +71,7 @@ class Api20001 : ApiAbstract() {
                     url = it.select("a").attr("href")
                     duration = it.select("span[class=duration]").text()
                 }
-                checkFavorite(item)
+                checkFavoriteAndGoods(item)
                 list.add(item)
             }
         } catch (e: Exception) {
