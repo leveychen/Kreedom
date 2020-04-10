@@ -126,7 +126,7 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
                 download.visibility = View.VISIBLE
             }
             //4/10，v3.2.0 下载功能不完善，暂不支持下载，后续开放
-//            download.visibility = View.GONE
+            download.visibility = View.GONE
             fullscreen.visibility = View.VISIBLE
             setUpAndStartPlay(currentGoods.url)
         }
