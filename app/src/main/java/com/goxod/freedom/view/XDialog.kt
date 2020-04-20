@@ -1,12 +1,10 @@
 package com.goxod.freedom.view
 
 import android.content.Context
-import android.content.Intent
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
 import com.goxod.freedom.BuildConfig
 import com.goxod.freedom.R
-import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.FavoriteType
 import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.db.LocalVideo
@@ -14,7 +12,6 @@ import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.utils.S
 import com.tencent.bugly.beta.Beta
-import org.litepal.LitePal
 import kotlin.system.exitProcess
 
 object XDialog{

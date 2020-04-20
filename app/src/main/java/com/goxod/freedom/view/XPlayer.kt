@@ -94,6 +94,7 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
             }
         }
         download.setOnClickListener {
+            S.log("DOWN = " + currentGoods.definition + " / " + currentGoods.url)
             XDialog.download(it.context, pageItem, currentGoods)
         }
     }
@@ -103,6 +104,10 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
     }
 
     fun setUp(item: PageEntity, preview: Boolean) {
+        try {
+            currentGoods = item.goods[0]
+        } catch (e: Exception) {
+        }
         pageItem = item
         if (preview) {
             mTitle = "[预览]" + item.title
@@ -111,7 +116,6 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
             setUpAndStartPlay(item.preview)
         } else {
             mTitle = item.title
-            currentGoods = item.goods[0]
             item.goods.map {
                 if (it.definition == "标清") {
                     currentGoods = it
@@ -126,7 +130,7 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
                 download.visibility = View.VISIBLE
             }
             //4/10，v3.2.0 下载功能不完善，暂不支持下载，后续开放
-            download.visibility = View.GONE
+           // download.visibility = View.GONE
             fullscreen.visibility = View.VISIBLE
             setUpAndStartPlay(currentGoods.url)
         }

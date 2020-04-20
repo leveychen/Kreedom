@@ -9,6 +9,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.goxod.freedom.R
 import com.goxod.freedom.config.type.DownloadEventType
 import com.goxod.freedom.config.type.FavoriteType
+import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.data.event.DownloadEvent
@@ -17,11 +18,13 @@ import com.goxod.freedom.service.DownloadService
 import com.goxod.freedom.utils.Mo
 import com.goxod.freedom.utils.S
 import com.jeffmony.downloader.utils.Utility
+import com.jeffmony.downloader.utils.VideoDownloadUtils
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.view.IconicsImageView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.io.File
 
 
 class ItemAdapter : BaseQuickAdapter<PageEntity, BaseViewHolder>(R.layout.item_video) {
@@ -59,13 +62,20 @@ class ItemAdapter : BaseQuickAdapter<PageEntity, BaseViewHolder>(R.layout.item_v
                     }
                     DownloadEventType.Success ->{
                         data[it].goods.clear()
-                        data[it].goods.add(GoodsEntity("本地",event.task!!.localUrl))
+                        data[it].goods.add(GoodsEntity("本地",event.task!!.filePath))
                         progress.visibility = View.GONE
                         S.success(context,"下载完成\n" + data[it].title)
+                        notifyItemChanged(it)
                     }
                     DownloadEventType.Error ->{
                         progress.visibility = View.GONE
                         S.error(context,"下载错误\n" + data[it].title)
+                        notifyItemChanged(it)
+                    }
+                    DownloadEventType.DELETE ->{
+                        progress.visibility = View.GONE
+                        S.info(context,"取消下载\n" + data[it].title)
+                        notifyItemChanged(it)
                     }
                 }
                 return

@@ -1,6 +1,7 @@
 package com.goxod.freedom.service
 
 import android.content.Context
+import com.goxod.freedom.config.ApiConstants
 import com.goxod.freedom.config.type.DownloadEventType
 import com.goxod.freedom.config.type.FavoriteType
 import com.goxod.freedom.data.db.Db
@@ -11,7 +12,9 @@ import com.jeffmony.downloader.VideoDownloadManager
 import com.jeffmony.downloader.listener.DownloadListener
 import com.jeffmony.downloader.model.VideoTaskItem
 import com.jeffmony.downloader.utils.Utility
+import com.jeffmony.downloader.utils.VideoDownloadUtils
 import org.greenrobot.eventbus.EventBus
+import java.io.File
 
 
 object DownloadService {
@@ -35,8 +38,8 @@ object DownloadService {
         val config = VideoDownloadManager.Build(context)
             .setCacheRoot(context.getExternalFilesDir("video"))
             .setUrlRedirect(true)
-            .setTimeOut(VideoDownloadManager.READ_TIMEOUT, VideoDownloadManager.CONN_TIMEOUT)
-            .setConcurrentCount(VideoDownloadManager.CONCURRENT)
+            .setTimeOut(ApiConstants.TIMEOUT, ApiConstants.TIMEOUT)
+            .setConcurrentCount(ApiConstants.TIMEOUT)
             .setIgnoreCertErrors(true)
             .buildConfig()
         VideoDownloadManager.getInstance().initConfig(config)
@@ -61,19 +64,25 @@ object DownloadService {
         }
         override fun onDownloadProgress(item: VideoTaskItem?) {
             if(item == null) return
-            val current = System.currentTimeMillis()
-            if(current - lastUiRefreshTime > UI_REFRESH_INTERVAL) {
-                lastUiRefreshTime = current
-                S.log("onDownloadProgress = " + item.speedString + " / " + item.downloadSizeString + " / " + Utility.getSize(item.totalSize))
-                postEvent(DownloadEventType.Progress,item)
+            val ct = System.currentTimeMillis()
+            if(ct - lastUiRefreshTime > UI_REFRESH_INTERVAL) {
+                lastUiRefreshTime = ct
+                S.log(
+                    "onDownloadProgress = " + item.speedString + " / " + item.downloadSizeString + " / " + Utility.getSize(
+                        item.totalSize
+                    )
+                )
+                postEvent(DownloadEventType.Progress, item)
             }
         }
 
         override fun onDownloadSuccess(item: VideoTaskItem?) {
             if(item == null) return
-            S.log("onDownloadSuccess = " + item.localUrl + " / " +  item.videoType)
+            item.filePath = item.filePath.replace("/.",".")
+            S.log("onDownloadSuccess filePath = " + item.filePath)
             Db.task(item.url)?.apply {
-                video = item.localUrl
+                video = item.filePath
+                S.log("onDownloadSuccess AbsPath = $video")
                 totalSize = Utility.getSize(item.totalSize)
             }?.save()
             refreshDownloadList()
@@ -86,9 +95,24 @@ object DownloadService {
             refreshDownloadList()
             postEvent(DownloadEventType.Error,item)
         }
+
+        override fun onDownloadPause(item: VideoTaskItem?) {
+            super.onDownloadPause(item)
+            S.log("onDownloadPause = " + item?.url)
+            postEvent(DownloadEventType.DELETE,item)
+        }
     }
 
     private fun postEvent(type:DownloadEventType,item: VideoTaskItem?){
         EventBus.getDefault().post(DownloadEvent(type,item))
+    }
+
+    fun download(taskId:String){
+        VideoDownloadManager.getInstance().startDownload(VideoTaskItem(taskId))
+    }
+
+    fun stop(url:String){
+        S.log("DownloadService stop")
+        VideoDownloadManager.getInstance().deleteVideoTask(VideoTaskItem(url),true)
     }
 }

@@ -24,7 +24,6 @@ import com.goxod.freedom.R
 import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.SecondaryItem
 import com.goxod.freedom.data.adapter.ItemAdapter
-import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.db.LocalVideo
 import com.goxod.freedom.data.entity.CategoryEntity
 import com.goxod.freedom.data.entity.PageEntity
@@ -62,7 +61,7 @@ import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     private var mRefresher: SmartRefreshLayout? = null
     private var mRecyclerView: RecyclerView? = null
@@ -108,7 +107,6 @@ class MainActivity : AppCompatActivity() {
             switch_size.visibility = View.GONE
             change_speed.visibility = View.GONE
             change_rotate.visibility = View.GONE
-            seekOnStart = 6000
             setIsTouchWiget(false)
             fullscreen.setOnClickListener {
                 val seekTo = x_player.currentPositionWhenPlaying.toLong();
@@ -335,21 +333,23 @@ class MainActivity : AppCompatActivity() {
              * @see com.goxod.freedom.service.ApiAbstract.checkFavoriteAndGoods
              */
             if(item.goods.isNotEmpty()){
+                S.log("item.goods[0].url = " + item.goods[0].definition + " / " + item.goods[0].url)
                 if(File(item.goods[0].url).exists()) {
                     VideoActivity.start(this, item, 0)
-                }else{
-                    MaterialDialog(this).show {
-                        title(text = "本地文件损坏")
-                        message(text = "本地文件已被删除或损坏,请重新点击进行在线播放或下载")
-                        noAutoDismiss()
-                        positiveButton(text = "好的"){
-                            LocalVideo(item.url).apply {
-                                favoriteType = -1
-                            }.deleteAndNotify(item)
-                            dismiss()
-                        }
-                    }
                 }
+//                else{
+//                    MaterialDialog(this).show {
+//                        title(text = "本地文件损坏")
+//                        message(text = "本地文件已被删除或损坏,请重新点击进行在线播放或下载")
+//                        noAutoDismiss()
+//                        positiveButton(text = "好的"){
+//                            LocalVideo(item.url).apply {
+//                                favoriteType = -1
+//                            }.deleteAndNotify(item)
+//                            dismiss()
+//                        }
+//                    }
+//                }
                 return
             }
             if (!S.checkInternetAvailable(this)) {

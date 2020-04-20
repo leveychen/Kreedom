@@ -6,11 +6,10 @@ import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.data.event.FavoriteEvent
 import com.goxod.freedom.service.DownloadService
 import com.goxod.freedom.utils.S
-import com.jeffmony.downloader.VideoDownloadManager
-import com.jeffmony.downloader.model.VideoTaskItem
 import org.greenrobot.eventbus.EventBus
 import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
+import java.io.File
 
 
 class LocalVideo(@Column(unique = true, defaultValue = "unknown") var url: String) :
@@ -38,8 +37,8 @@ class LocalVideo(@Column(unique = true, defaultValue = "unknown") var url: Strin
         //当视频不为空时判定为下载
         if(favoriteType == FavoriteType.DOWNLOAD.ordinal && video != null){
             taskId = video.url
-            S.log("saveAndNotify DOWNLOAD = " + video.url)
-            VideoDownloadManager.getInstance().startDownload(VideoTaskItem(taskId))
+            S.log("saveAndNotify DOWNLOAD = $taskId")
+            DownloadService.download(taskId)
         }
         save()
         notifyItemChanged(favoriteType, item)
@@ -47,11 +46,8 @@ class LocalVideo(@Column(unique = true, defaultValue = "unknown") var url: Strin
 
     fun deleteAndNotify(item: PageEntity) {
         S.log("deleteAndNotify URL = $url")
-        if(this.favoriteType == FavoriteType.DEL_DOWNLOAD.ordinal){
-            VideoDownloadManager.getInstance().deleteVideoTask(taskId,true)
-        }
-        item.goods.clear()
         Db.delete(url)
+        item.goods.clear()
         notifyItemChanged(-1, item)
     }
 

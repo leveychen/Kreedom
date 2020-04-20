@@ -5,5 +5,6 @@ enum class DownloadEventType {
     Start,
     Progress,
     Success,
-    Error
+    Error,
+    DELETE
 }

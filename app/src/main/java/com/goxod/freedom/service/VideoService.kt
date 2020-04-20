@@ -25,7 +25,7 @@ object VideoService {
                 }
                 .execute().parse()
             val videoUrl = doc.select("source").attr("src")
-            if(videoUrl != null){
+            if(!videoUrl.isNullOrBlank()){
                 list.add(GoodsEntity("默认", videoUrl))
             }else {
                 doc.getElementsByTag("script").map {
@@ -43,6 +43,7 @@ object VideoService {
                         val s = api20001Engine?.request("strencode", args)
                         if (s is String) {
                             val video = Jsoup.parse(s).select("source").attr("src")
+                            S.log("api20001Engine VIDEO = $video")
                             list.add(GoodsEntity("默认", video))
                         }
                         return@map

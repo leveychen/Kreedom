@@ -40,6 +40,7 @@ class ApiFavorite : ApiAbstract() {
                 item.favorite = it.favoriteType
                 //当本地视频存在时则认为是已下载，直接赋予本地视频
                 if(it.video.isNotBlank()){
+                    S.log("loadPageItems = " + it + " / " + it.video)
                     item.goods.add(GoodsEntity("本地",it.video))
                 }
             }

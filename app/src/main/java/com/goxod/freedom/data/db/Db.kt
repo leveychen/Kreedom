@@ -2,14 +2,18 @@ package com.goxod.freedom.data.db
 
 import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.FavoriteType
+import com.goxod.freedom.data.entity.PageEntity
+import com.goxod.freedom.service.DownloadService
 import com.goxod.freedom.utils.Mo
 import com.goxod.freedom.utils.S
 import org.litepal.LitePal
+import java.io.File
 
 object Db {
 
 
-    fun delete(url: String) {
+    fun delete(url:String) {
+        DownloadService.stop(url)
         val ok = LitePal.deleteAll(LocalVideo::class.java, "url = ?", url)
         S.log("DELETE OK = $ok")
     }
