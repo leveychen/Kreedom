@@ -9,6 +9,7 @@ import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
+import com.tencent.bugly.Bugly
 //import com.tencent.bugly.Bugly
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,7 +26,6 @@ class App : Application() {
         initRefreshLayout()
         initDataAndSp()
         initDownloadService()
-        S.log("App = " + BuildConfig.DEBUG)
     }
 
     private fun initDownloadService(){
@@ -33,7 +33,7 @@ class App : Application() {
     }
 
     private fun initBugly(){
-//        Bugly.init(applicationContext, "0454d7274b", BuildConfig.DEBUG)
+        Bugly.init(applicationContext, "0454d7274b", BuildConfig.DEBUG)
     }
 
     private fun initDataAndSp() {

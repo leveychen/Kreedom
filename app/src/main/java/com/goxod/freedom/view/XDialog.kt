@@ -95,7 +95,7 @@ object XDialog{
             title(text = actionFavoriteType.title)
             val message = when (actionFavoriteType) {
                 FavoriteType.DOWNLOAD -> {
-                    item.title + ".mp4\n[" + video?.definition + "]"
+                    item.title
                 }
                 else-> item.title
 
