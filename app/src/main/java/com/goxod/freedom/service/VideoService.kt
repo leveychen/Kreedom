@@ -16,14 +16,19 @@ object VideoService {
     fun fromApi20001(context: Context, page: PageEntity): MutableList<GoodsEntity> {
         val list = arrayListOf<GoodsEntity>()
         try {
-            Jsoup
+            val doc = Jsoup
                 .connect(page.url.replace("view_video_hd.php","view_video.php"))
                 .apply {
                     header("User-Agent", ApiUtil.ua())
                     header("X-Forwarded-For", ApiUtil.ip())
                     timeout(ApiConstants.TIMEOUT)
                 }
-                .execute().parse().getElementsByTag("script").map {
+                .execute().parse()
+            val videoUrl = doc.select("source").attr("src")
+            if(!videoUrl.isNullOrBlank()){
+                list.add(GoodsEntity("默认", videoUrl))
+            }else {
+                doc.getElementsByTag("script").map {
                     if (it.data().contains("document.write(strencode(")) {
                         val origin = it.data()
                             .replace("<!--", "")
@@ -32,17 +37,23 @@ object VideoService {
                             .replace("document.write(strencode(\"", "")
                             .replace("\"));", "")
                         val args = origin.split("\",\"")
-                        if(api20001Engine == null){
+                        if (api20001Engine == null) {
                             api20001Engine = JsEngine(context, "js/api20001.js")
                         }
                         val s = api20001Engine?.request("strencode", args)
                         if (s is String) {
                             val video = Jsoup.parse(s).select("source").attr("src")
+                            S.log("api20001Engine VIDEO = $video")
                             list.add(GoodsEntity("默认", video))
                         }
                         return@map
                     }
                 }
+            }
+            if(list.isEmpty()){
+                val video = Jsoup.parse(doc.select("textarea[id=video_link]").text()).select("source").attr("src")
+                list.add(GoodsEntity("默认", video))
+            }
         } catch (e: Exception) {
             S.log("fromApi20001 = " + e.localizedMessage)
         }

@@ -63,7 +63,7 @@ class Api10001 : ApiAbstract() {
                     preview =
                         it.select("video[class=gifVideo js-gifVideo lazyVideo]").attr("data-mp4")
                 }
-                checkFavorite(item)
+                checkFavoriteAndGoods(item)
                 list.add(item)
             }
         } catch (e: Exception) {

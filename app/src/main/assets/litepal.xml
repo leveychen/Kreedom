@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <dbname value="freedom" />
-    <version value="1" />
+    <version value="30200" />
     <list>
         <mapping class="com.goxod.freedom.data.db.LocalVideo" />
     </list>

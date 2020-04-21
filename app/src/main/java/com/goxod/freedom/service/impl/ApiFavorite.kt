@@ -10,7 +10,6 @@ import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.service.ApiAbstract
 import com.goxod.freedom.service.VideoService
 import com.goxod.freedom.utils.S
-import java.util.*
 
 class ApiFavorite : ApiAbstract() {
 
@@ -36,16 +35,14 @@ class ApiFavorite : ApiAbstract() {
         val list = arrayListOf<PageEntity>()
         val dd = Db.favorite(FavoriteType.values()[categoryIndex], page, 10)
         dd?.map {
-            val item = PageEntity().apply {
-                this.title = it.title
-                this.apiId = it.apiId
-                this.url = it.url
-                this.duration = it.duration
-                this.cover = it.cover
-                this.preview = it.preview
-                this.favorite = it.favoriteType
-                this.isFavoritePage = true
-                this.favoriteTime = S.localVideoSfd.format(Date(it.time))
+            val item = PageEntity.generate(it)
+            if (it.url == item.url) {
+                item.favorite = it.favoriteType
+                //当本地视频存在时则认为是已下载，直接赋予本地视频
+                if(it.video.isNotBlank()){
+                    S.log("loadPageItems = " + it + " / " + it.video)
+                    item.goods.add(GoodsEntity("本地",it.video))
+                }
             }
             list.add(item)
         }

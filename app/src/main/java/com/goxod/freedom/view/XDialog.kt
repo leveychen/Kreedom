@@ -1,12 +1,10 @@
 package com.goxod.freedom.view
 
 import android.content.Context
-import android.content.Intent
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
 import com.goxod.freedom.BuildConfig
 import com.goxod.freedom.R
-import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.FavoriteType
 import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.db.LocalVideo
@@ -14,7 +12,6 @@ import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.utils.S
 import com.tencent.bugly.beta.Beta
-import org.litepal.LitePal
 import kotlin.system.exitProcess
 
 object XDialog{
@@ -44,6 +41,7 @@ object XDialog{
     fun close(context: Context){
         MaterialDialog(context).show {
             title(text = "关闭" + context.getString(R.string.app_name) + "?")
+            message(text = "由于视频存在访问有效期限制,无法支持断点续传。\n关闭应用将停止并移除所有正在下载的视频!!!三思 :D")
             positiveButton(text = "关闭")
             positiveButton {
                 android.os.Process.killProcess(android.os.Process.myPid())
@@ -83,38 +81,24 @@ object XDialog{
         video: GoodsEntity?
     ) {
         var actionFavoriteType = favoriteType
-
-        if (item.apiId == ApiItem.FAVORITE.apiId) {
-            if (favoriteType == FavoriteType.COLLECTION) {
-                actionFavoriteType = FavoriteType.DEL_COLLECTION
-            } else if (favoriteType == FavoriteType.DOWNLOAD) {
-                actionFavoriteType = FavoriteType.DEL_DOWNLOAD
-            }
-        } else {
-            val first = Db.first(item.url, favoriteType)
-            if (first != null) {
-                if (favoriteType == FavoriteType.COLLECTION) {
+        val first = Db.first(item.url)
+        if (first != null) {
+            if (first.favoriteType == FavoriteType.COLLECTION.ordinal) {
+                if(actionFavoriteType != FavoriteType.DOWNLOAD){
                     actionFavoriteType = FavoriteType.DEL_COLLECTION
-                } else if (favoriteType == FavoriteType.DOWNLOAD) {
-                    actionFavoriteType = FavoriteType.DEL_DOWNLOAD
                 }
+            } else if (first.favoriteType == FavoriteType.DOWNLOAD.ordinal) {
+                actionFavoriteType = FavoriteType.DEL_DOWNLOAD
             }
         }
         MaterialDialog(context).show {
             title(text = actionFavoriteType.title)
             val message = when (actionFavoriteType) {
                 FavoriteType.DOWNLOAD -> {
-                    item.title + ".mp4\n[" + video?.definition + "]"
-                }
-                FavoriteType.COLLECTION -> {
                     item.title
                 }
-                FavoriteType.DEL_DOWNLOAD -> {
-                    item.title
-                }
-                FavoriteType.DEL_COLLECTION -> {
-                    item.title
-                }
+                else-> item.title
+
             }
             message(text = message)
             noAutoDismiss()
@@ -123,19 +107,25 @@ object XDialog{
                 when (actionFavoriteType) {
                     FavoriteType.DOWNLOAD,
                     FavoriteType.COLLECTION -> {
-                        val dv = LocalVideo(item.url).apply {
-                            this.apiId = item.apiId
-                            this.favoriteType = favoriteType.ordinal
-                            this.title = item.title
-                            this.cover = item.cover
-                            this.duration = item.duration
-                            this.preview = item.preview
-                            if (video != null) {
-                                this.definition = video.definition
+                        item.favorite = favoriteType.ordinal
+                        if(first != null){
+                            first.favoriteType = item.favorite
+                            first.time = System.currentTimeMillis()
+                            first.saveAndNotify(item,video)
+                        }else{
+                            val dv = LocalVideo(item.url).apply {
+                                this.apiId = item.apiId
+                                this.favoriteType = item.favorite
+                                this.title = item.title
+                                this.cover = item.cover
+                                this.duration = item.duration
+                                this.preview = item.preview
+                                if (video != null) {
+                                    this.definition = video.definition
+                                }
                             }
-                            this.taskId = 0
+                            dv.saveAndNotify(item,video)
                         }
-                        dv.saveAndNotify(item)
                     }
                     FavoriteType.DEL_DOWNLOAD,
                     FavoriteType.DEL_COLLECTION -> {

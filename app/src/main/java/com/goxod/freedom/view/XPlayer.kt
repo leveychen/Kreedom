@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import com.goxod.freedom.R
 import com.goxod.freedom.config.sp.Sp
+import com.goxod.freedom.config.type.FavoriteType
+import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.entity.SpeedEntity
 import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
@@ -92,6 +94,11 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
             }
         }
         download.setOnClickListener {
+            S.log("DOWN = " + currentGoods.definition + " / " + currentGoods.url)
+            if(currentGoods.url.endsWith(".m3u8")){
+                S.toast(it.context,"HLS视频暂不支持下载")
+                return@setOnClickListener
+            }
             XDialog.download(it.context, pageItem, currentGoods)
         }
     }
@@ -101,6 +108,10 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
     }
 
     fun setUp(item: PageEntity, preview: Boolean) {
+        try {
+            currentGoods = item.goods[0]
+        } catch (e: Exception) {
+        }
         pageItem = item
         if (preview) {
             mTitle = "[预览]" + item.title
@@ -109,7 +120,6 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
             setUpAndStartPlay(item.preview)
         } else {
             mTitle = item.title
-            currentGoods = item.goods[0]
             item.goods.map {
                 if (it.definition == "标清") {
                     currentGoods = it
@@ -117,7 +127,14 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
                 }
             }
             switch_size.text = currentGoods.definition
-            download.visibility = View.GONE
+            if ("本地" == currentGoods.definition) {
+                S.log("已下载,隐藏下载图标")
+                download.visibility = View.GONE
+            }else{
+                download.visibility = View.VISIBLE
+            }
+            //4/10，v3.2.0 下载功能不完善，暂不支持下载，后续开放
+           // download.visibility = View.GONE
             fullscreen.visibility = View.VISIBLE
             setUpAndStartPlay(currentGoods.url)
         }

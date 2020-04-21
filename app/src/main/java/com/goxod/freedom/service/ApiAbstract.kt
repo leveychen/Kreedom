@@ -3,6 +3,7 @@ package com.goxod.freedom.service
 import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.db.LocalVideo
 import com.goxod.freedom.data.entity.CategoryEntity
+import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.utils.AesUtil
 
@@ -33,10 +34,14 @@ abstract class ApiAbstract : ApiInterface {
     }
 
 
-    protected fun checkFavorite(item: PageEntity) {
+    protected fun checkFavoriteAndGoods(item: PageEntity) {
         collection.map {
             if (it.url == item.url) {
                 item.favorite = it.favoriteType
+                //当本地视频存在时则认为是已下载，直接赋予本地视频
+                if(it.video.isNotBlank()){
+                    item.goods.add(GoodsEntity("本地",it.video))
+                }
             }
         }
     }
