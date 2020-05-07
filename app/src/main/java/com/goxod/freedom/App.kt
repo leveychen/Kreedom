@@ -3,14 +3,12 @@ package com.goxod.freedom
 import android.app.Application
 import com.goxod.freedom.config.sp.Sp
 import com.goxod.freedom.service.DownloadService
-import com.goxod.freedom.utils.S
 import com.mikepenz.iconics.Iconics
 import com.scwang.smartrefresh.layout.SmartRefreshLayout
 import com.scwang.smartrefresh.layout.footer.ClassicsFooter
 import com.scwang.smartrefresh.layout.header.ClassicsHeader
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.tencent.bugly.Bugly
-//import com.tencent.bugly.Bugly
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.litepal.LitePal
@@ -27,6 +25,7 @@ class App : Application() {
         initDataAndSp()
         initDownloadService()
     }
+
 
     private fun initDownloadService(){
         DownloadService.init(this)
