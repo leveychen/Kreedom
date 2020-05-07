@@ -16,7 +16,6 @@ android {
         versionCode 30200
         versionName "3.2.0"
     }
-    ndkVersion '21.0.6113669'
 
     signingConfigs {
         release {
