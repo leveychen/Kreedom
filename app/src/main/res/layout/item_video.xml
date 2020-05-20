@@ -63,14 +63,15 @@
         android:layout_height="0dp"
         android:padding="11dp"
         android:scaleType="fitXY"
-        android:visibility="visible"
+        android:visibility="gone"
         app:iiv_color="@color/color_favorite_selector"
         app:iiv_icon="faw-heart"
         android:layout_marginStart="5dp"
         app:layout_constraintTop_toBottomOf="@id/tv_title"
         app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_percent="0.12" />
+        app:layout_constraintWidth_percent="0.12"
+        />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_progress"

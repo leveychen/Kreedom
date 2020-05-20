@@ -8,6 +8,8 @@ import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.utils.AesUtil
 
 abstract class ApiAbstract : ApiInterface {
+
+    override var searchKey: String = ""
     override var realHost: String = ""
     override fun fetchRealHost() {
         realHost = AesUtil.decrypt(api().key)

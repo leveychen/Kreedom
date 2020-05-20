@@ -10,6 +10,7 @@ import com.goxod.freedom.service.ApiAbstract
 import com.goxod.freedom.service.VideoService
 import com.goxod.freedom.utils.ApiUtil
 import com.goxod.freedom.utils.S
+import com.hankcs.hanlp.HanLP
 import org.jsoup.Jsoup
 
 @Suppress("BlockingMethodInNonBlockingContext")
@@ -34,14 +35,18 @@ class Api40001 : ApiAbstract() {
         CategoryEntity("制服誘惑", "categories/uniform/?sort_by=post_date&from="),
         CategoryEntity("角色劇情", "categories/roleplay/?sort_by=post_date&from="),
         CategoryEntity("絲襪美腿", "categories/pantyhose/?sort_by=post_date&from="),
-        CategoryEntity("女同歡愉", "categories/lesbian/?sort_by=post_date&from=")
-
+        CategoryEntity("女同歡愉", "categories/lesbian/?sort_by=post_date&from="),
+        CategoryEntity(ApiConstants.SEARCH, "search/")
     )
 
 
     override suspend fun loadPageItems(page: Int): MutableList<PageEntity> {
         refreshCollection(page)
-        val request = realHost + categories[categoryIndex].part + page
+        val request = if(ApiConstants.SEARCH == categories[categoryIndex].category){
+            realHost + categories[categoryIndex].part + HanLP.convertToTraditionalChinese(searchKey.replace(" ", "-")) + "/?from_videos=" + page
+        }else{
+            realHost + categories[categoryIndex].part + page
+        }
         S.log("PAGE = $request")
         val list = arrayListOf<PageEntity>()
         try {

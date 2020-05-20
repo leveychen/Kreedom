@@ -16,11 +16,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.getInputField
+import com.afollestad.materialdialogs.input.input
 import com.bumptech.glide.Glide
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
 import com.goxod.freedom.BuildConfig
 import com.goxod.freedom.R
+import com.goxod.freedom.config.ApiConstants
 import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.SecondaryItem
 import com.goxod.freedom.data.adapter.ItemAdapter
@@ -466,9 +469,32 @@ class MainActivity : AppCompatActivity(){
                         currentApi.api.categories.map(CategoryEntity::category).toTypedArray(),
                         null
                     ) { index, _ ->
-                        if (currentApi.api.categoryIndex == index) return@asAttachList
-                        currentApi.api.categoryIndex = index
-                        refreshAndChangeTitle()
+                        if(ApiConstants.SEARCH == currentApi.api.categories[index].category){
+                            MaterialDialog(this).show {
+                                title(text = ApiConstants.SEARCH)
+                                message(text = "如果沒有結果，关键字中間加個空格:D")
+                                input(hint = "請輸入車牌或關鍵字",allowEmpty = false){
+                                        _, txt ->
+                                    currentApi.api.searchKey = txt.toString().trim()
+                                    if(currentApi.api.searchKey.isNotBlank()){
+                                        currentApi.api.categoryIndex = index
+                                        refreshAndChangeTitle()
+                                        dismiss()
+                                    }else{
+                                        getInputField().setText("")
+                                    }
+                                }
+                                noAutoDismiss()
+                                positiveButton(text = "搞快點")
+                                negativeButton(text = "取消"){
+                                    dismiss()
+                                }
+                            }
+                        }else{
+                            if (currentApi.api.categoryIndex == index) return@asAttachList
+                            currentApi.api.categoryIndex = index
+                            refreshAndChangeTitle()
+                        }
                     }
                     .show()
             }

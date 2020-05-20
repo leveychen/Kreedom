@@ -8,6 +8,8 @@ import com.goxod.freedom.data.entity.GoodsEntity
 
 interface ApiInterface {
 
+    var searchKey:String
+
     var realHost:String
 
     fun fetchRealHost()

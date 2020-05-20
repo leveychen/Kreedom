@@ -1,6 +1,9 @@
 <resources>
     <string-array name="change_log">
         <item>更新日志</item>
+        <item>3.2.0</item>
+        <item>1.新增[长篇]板块搜索功能</item>
+        <item>入口在右上角菜单最下方</item>
         <item>3.1.5</item>
         <item>1.修复自拍加载视频问题</item>
         <item>2.增加部分视频下载功能</item>
