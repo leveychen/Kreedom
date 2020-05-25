@@ -13,8 +13,8 @@ android {
         applicationId "com.goxod.freedom"
         minSdkVersion 25
         targetSdkVersion 29
-        versionCode 30200
-        versionName "3.2.0"
+        versionCode 30300
+        versionName "3.3.0"
     }
 
     signingConfigs {
@@ -62,6 +62,11 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
+
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -78,8 +83,8 @@ dependencies {
     implementation 'com.squareup.moshi:moshi-kotlin:1.9.2'
     implementation 'com.hjq:xxpermissions:6.2'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    implementation 'com.shuyu:gsyVideoPlayer-java:7.1.3'
-    implementation 'com.shuyu:GSYVideoPlayer-exo2:7.1.3'
+    implementation 'com.shuyu:gsyVideoPlayer-java:7.1.4'
+    implementation 'com.shuyu:GSYVideoPlayer-exo2:7.1.4'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.1'
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.2'
     implementation 'com.mikepenz:materialdrawer:8.0.0-rc02'
@@ -100,6 +105,7 @@ dependencies {
     implementation 'com.lxj:xpopup:1.8.10-x'
     implementation 'org.litepal.android:kotlin:3.0.0'
     implementation 'org.mozilla:rhino:1.7.12'
-    implementation 'com.github.JeffMony:VideoDownloader:3.0.0'
     implementation 'com.hankcs:hanlp:portable-1.7.7'
+    implementation 'com.arialyy.aria:core:3.8.7'
+    implementation 'com.arialyy.aria:m3u8Component:3.8.7'
 }

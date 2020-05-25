@@ -9,4 +9,6 @@
     <color name="cnRed">#ee3f4d</color>
     <color name="cnBerlin">#126bae</color>
     <color name="textViewBg">#90000000</color>
+    <color name="shark_gray">#35333c</color>
+    <color name="fish_gray">#5e616d</color>
 </resources>

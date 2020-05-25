@@ -1,24 +1,22 @@
 package com.goxod.freedom.data.db
 
+import android.content.Context
 import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.FavoriteType
-import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.service.DownloadService
 import com.goxod.freedom.utils.Mo
 import com.goxod.freedom.utils.S
-import com.jeffmony.downloader.utils.VideoDownloadUtils
 import org.litepal.LitePal
-import java.io.File
 
 object Db {
 
 
-    fun delete(url:String) {
-        DownloadService.stop(url)
-        val first = first(url)
-        if(first!=null){
-            VideoDownloadUtils.delete(File(first.video).parentFile)
-        }
+    fun delete(context: Context,url:String) {
+        DownloadService.stop(context,url)
+//        val first = first(url)
+//        if(first!=null){
+//            S.log("delete ===== 请执行文件删除")
+//        }
         val ok = LitePal.deleteAll(LocalVideo::class.java, "url = ?", url)
         S.log("DELETE OK = $ok")
     }

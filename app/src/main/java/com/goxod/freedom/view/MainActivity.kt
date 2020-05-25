@@ -2,6 +2,7 @@ package com.goxod.freedom.view
 
 
 import android.content.Context
+import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.KeyEvent
@@ -18,6 +19,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
+import com.arialyy.annotations.Download
+import com.arialyy.aria.core.Aria
+import com.arialyy.aria.core.AriaManager
+import com.arialyy.aria.core.listener.ISchedulers
+import com.arialyy.aria.core.scheduler.NormalTaskListener
+import com.arialyy.aria.core.task.DownloadTask
 import com.bumptech.glide.Glide
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
@@ -27,10 +34,10 @@ import com.goxod.freedom.config.ApiConstants
 import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.SecondaryItem
 import com.goxod.freedom.data.adapter.ItemAdapter
-import com.goxod.freedom.data.db.LocalVideo
 import com.goxod.freedom.data.entity.CategoryEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.data.event.ErrorEvent
+import com.goxod.freedom.service.AriaBroadcastReceiver
 import com.goxod.freedom.utils.JsEngine
 import com.goxod.freedom.utils.S
 import com.gyf.immersionbar.ktx.immersionBar
@@ -64,7 +71,7 @@ import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity() {
 
     private var mRefresher: SmartRefreshLayout? = null
     private var mRecyclerView: RecyclerView? = null
@@ -75,7 +82,6 @@ class MainActivity : AppCompatActivity(){
     private var mTextColor: ColorStateList? = null
     private lateinit var actionBarDrawerToggle: ActionBarDrawerToggle
     private var loopAnimation: Animation? = null
-    private var allowClick = true
     private var dialog: MaterialDialog? = null
 
 
@@ -218,7 +224,7 @@ class MainActivity : AppCompatActivity(){
 
     private fun clickSecondaryItem(item: SecondaryItem) {
         when (item) {
-            SecondaryItem.SETTINGS -> {
+            SecondaryItem.SETTINGS -> run {
                 XDialog.settings(this)
             }
             SecondaryItem.ABOUT -> {
@@ -258,20 +264,18 @@ class MainActivity : AppCompatActivity(){
                     R.id.btn_favorite
                 )
                 setOnItemChildClickListener { _, view, position ->
-                    if (allowClick) {
-                        when (view.id) {
-                            R.id.btn_play -> {
-                                loadAndPlayVideos(view, position, false)
-                            }
-                            R.id.iv_cover -> {
-                                showImage(view as ImageView,  mAdapter.getItem(position))
-                            }
-                            R.id.btn_preview -> {
-                                loadAndPlayVideos(view, position, true)
-                            }
-                            R.id.btn_favorite -> {
-                                collection(position)
-                            }
+                    when (view.id) {
+                        R.id.btn_play -> {
+                            loadAndPlayVideos(view, position, false)
+                        }
+                        R.id.iv_cover -> {
+                            showImage(view as ImageView,  mAdapter.getItem(position))
+                        }
+                        R.id.btn_preview -> {
+                            loadAndPlayVideos(view, position, true)
+                        }
+                        R.id.btn_favorite -> {
+                            collection(position)
                         }
                     }
                 }
@@ -339,6 +343,7 @@ class MainActivity : AppCompatActivity(){
                 S.log("item.goods[0].url = " + item.goods[0].definition + " / " + item.goods[0].url)
                 if(File(item.goods[0].url).exists()) {
                     VideoActivity.start(this, item, 0)
+                    return
                 }
 //                else{
 //                    MaterialDialog(this).show {
@@ -353,7 +358,6 @@ class MainActivity : AppCompatActivity(){
 //                        }
 //                    }
 //                }
-                return
             }
             if (!S.checkInternetAvailable(this)) {
                 return
@@ -385,7 +389,6 @@ class MainActivity : AppCompatActivity(){
                     isClickable = false
                     isEnabled = false
                 }
-                allowClick = false
             } else {
                 v.apply {
                     icon = IconicsDrawable(v.context, FontAwesome.Icon.faw_play_circle.name)
@@ -394,7 +397,6 @@ class MainActivity : AppCompatActivity(){
                     isClickable = true
                     isEnabled = true
                 }
-                allowClick = true
             }
         }
     }
@@ -482,6 +484,7 @@ class MainActivity : AppCompatActivity(){
                                         dismiss()
                                     }else{
                                         getInputField().setText("")
+                                        S.toast(this@MainActivity,"空格你搜索个球?")
                                     }
                                 }
                                 noAutoDismiss()
@@ -563,6 +566,7 @@ class MainActivity : AppCompatActivity(){
         }
         JsEngine.unRegister()
         EventBus.getDefault().unregister(this)
+        unregisterReceiver(receiver)
     }
 
     override fun onStop() {
@@ -590,5 +594,8 @@ class MainActivity : AppCompatActivity(){
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        registerReceiver(receiver, IntentFilter(ISchedulers.ARIA_TASK_INFO_ACTION))
     }
+
+    val receiver = AriaBroadcastReceiver()
 }

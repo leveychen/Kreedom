@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<aria>
+    <app>
+        <useBroadcast value="true"/>
+    </app>
+    <download>
+        <maxTaskNum value="3"/>
+        <convertSpeed value="true"/>
+    </download>
+</aria>

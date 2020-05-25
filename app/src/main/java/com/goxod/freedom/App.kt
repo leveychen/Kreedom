@@ -23,12 +23,6 @@ class App : Application() {
         initPlayer()
         initRefreshLayout()
         initDataAndSp()
-        initDownloadService()
-    }
-
-
-    private fun initDownloadService(){
-        DownloadService.init(this)
     }
 
     private fun initBugly(){

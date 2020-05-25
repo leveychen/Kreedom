@@ -1,7 +1,10 @@
 package com.goxod.freedom.view
 
 import android.content.Context
+import android.view.ViewGroup
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.list.listItems
 import com.goxod.freedom.BuildConfig
 import com.goxod.freedom.R
@@ -10,7 +13,6 @@ import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.db.LocalVideo
 import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
-import com.goxod.freedom.utils.S
 import com.tencent.bugly.beta.Beta
 import kotlin.system.exitProcess
 
@@ -18,12 +20,21 @@ object XDialog{
 
 
     fun settings(context: Context){
-        S.info(context,"暂无设置选项")
+        MaterialDialog(context)
+            .show {
+                title(text = "设置")
+                noAutoDismiss()
+                cancelable(false)
+                customView(viewRes = R.layout.dialog_settings)
+                positiveButton(text = "确定"){
+                    dismiss()
+                }
+            }
     }
 
 
     fun about(context: Context){
-        MaterialDialog(context)
+        val dialog  = MaterialDialog(context)
             .show {
                 title(text = "关于 v" + BuildConfig.VERSION_NAME)
                 listItems(items = context.resources.getStringArray(R.array.change_log).asList())
@@ -36,6 +47,11 @@ object XDialog{
                     Beta.checkUpgrade()
                 }
             }
+        val group:ViewGroup = dialog.getCustomView() as ViewGroup
+
+
+
+
     }
 
     fun close(context: Context){
@@ -111,7 +127,7 @@ object XDialog{
                         if(first != null){
                             first.favoriteType = item.favorite
                             first.time = System.currentTimeMillis()
-                            first.saveAndNotify(item,video)
+                            first.saveAndNotify(this.windowContext,item, video)
                         }else{
                             val dv = LocalVideo(item.url).apply {
                                 this.apiId = item.apiId
@@ -124,13 +140,13 @@ object XDialog{
                                     this.definition = video.definition
                                 }
                             }
-                            dv.saveAndNotify(item,video)
+                            dv.saveAndNotify(this.windowContext,item, video)
                         }
                     }
                     FavoriteType.DEL_DOWNLOAD,
                     FavoriteType.DEL_COLLECTION -> {
                         val dv = LocalVideo(item.url)
-                        dv.deleteAndNotify(item)
+                        dv.deleteAndNotify(context,item)
                     }
                 }
                 dismiss()

@@ -9,7 +9,6 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.goxod.freedom.R
 import com.goxod.freedom.config.type.DownloadEventType
 import com.goxod.freedom.config.type.FavoriteType
-import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.entity.GoodsEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.data.event.DownloadEvent
@@ -17,14 +16,11 @@ import com.goxod.freedom.data.event.FavoriteEvent
 import com.goxod.freedom.service.DownloadService
 import com.goxod.freedom.utils.Mo
 import com.goxod.freedom.utils.S
-import com.jeffmony.downloader.utils.Utility
-import com.jeffmony.downloader.utils.VideoDownloadUtils
 import com.mikepenz.iconics.typeface.library.fontawesome.FontAwesome
 import com.mikepenz.iconics.view.IconicsImageView
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.io.File
 
 
 class ItemAdapter : BaseQuickAdapter<PageEntity, BaseViewHolder>(R.layout.item_video) {
@@ -57,7 +53,7 @@ class ItemAdapter : BaseQuickAdapter<PageEntity, BaseViewHolder>(R.layout.item_v
                         S.toast(context,"已开始下载\n" + data[it].title)
                     }
                     DownloadEventType.Progress ->{
-                        progress.text = "" + event.task!!.downloadSizeString + " / " + Utility.getSize(event.task!!.totalSize) + "\n\n" + event.task!!.percentString + " - " + event.task!!.speedString
+                        progress.text = "" + event.task!!.convertSpeed
                         progress.visibility = View.VISIBLE
                     }
                     DownloadEventType.Success ->{

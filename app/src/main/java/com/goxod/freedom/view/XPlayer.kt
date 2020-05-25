@@ -95,10 +95,10 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
         }
         download.setOnClickListener {
             S.log("DOWN = " + currentGoods.definition + " / " + currentGoods.url)
-            if(currentGoods.url.endsWith(".m3u8")){
-                S.toast(it.context,"HLS视频暂不支持下载")
-                return@setOnClickListener
-            }
+//            if(currentGoods.url.endsWith(".m3u8")){
+//                S.toast(it.context,"HLS视频暂不支持下载")
+//                return@setOnClickListener
+//            }
             XDialog.download(it.context, pageItem, currentGoods)
         }
     }
