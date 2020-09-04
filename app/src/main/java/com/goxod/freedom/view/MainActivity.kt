@@ -19,12 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
-import com.arialyy.annotations.Download
-import com.arialyy.aria.core.Aria
-import com.arialyy.aria.core.AriaManager
 import com.arialyy.aria.core.listener.ISchedulers
-import com.arialyy.aria.core.scheduler.NormalTaskListener
-import com.arialyy.aria.core.task.DownloadTask
 import com.bumptech.glide.Glide
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
@@ -99,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun hasPermission(granted: MutableList<String>?, all: Boolean) {
+
 
                 }
             })
@@ -556,7 +552,7 @@ class MainActivity : AppCompatActivity() {
         dialog?.show()
     }
 
-
+  
     override fun onDestroy() {
         super.onDestroy()
         try {
@@ -597,5 +593,5 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(ISchedulers.ARIA_TASK_INFO_ACTION))
     }
 
-    val receiver = AriaBroadcastReceiver()
+    private val receiver = AriaBroadcastReceiver()
 }

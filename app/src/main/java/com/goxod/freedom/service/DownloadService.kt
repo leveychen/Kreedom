@@ -88,7 +88,7 @@ object DownloadService {
             Aria.download(context).load(id).cancel(true)
         }
     }
-    val vodTsUrlConverter = IVodTsUrlConverter{
+    private val vodTsUrlConverter = IVodTsUrlConverter{
         m3u8Url, tsUrls ->
         val host = m3u8Url.substring(0,m3u8Url.lastIndexOf("/")) + "/"
         val newUrls: MutableList<String> = ArrayList()
