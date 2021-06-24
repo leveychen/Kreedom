@@ -46,8 +46,8 @@ class JsEngine(private val mContext: android.content.Context, private val jsFile
         method: String,
         args: List<String>
     ):Any?{
-        val function = parent.get(method,parent) as Function
-        return function.call(rhino, parent, parent, args.toTypedArray())
+        val function = parent.get(method,scope) as Function
+        return function.call(rhino, scope, parent, args.toTypedArray())
     }
 
 

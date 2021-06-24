@@ -2,7 +2,6 @@ package com.goxod.freedom.view
 
 
 import android.content.Context
-import android.content.IntentFilter
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.KeyEvent
@@ -19,7 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.input.getInputField
 import com.afollestad.materialdialogs.input.input
-import com.arialyy.aria.core.listener.ISchedulers
+import com.arialyy.annotations.Download
+import com.arialyy.aria.core.Aria
+import com.arialyy.aria.core.task.DownloadTask
 import com.bumptech.glide.Glide
 import com.ethanhua.skeleton.Skeleton
 import com.ethanhua.skeleton.SkeletonScreen
@@ -32,7 +33,6 @@ import com.goxod.freedom.data.adapter.ItemAdapter
 import com.goxod.freedom.data.entity.CategoryEntity
 import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.data.event.ErrorEvent
-import com.goxod.freedom.service.AriaBroadcastReceiver
 import com.goxod.freedom.utils.JsEngine
 import com.goxod.freedom.utils.S
 import com.gyf.immersionbar.ktx.immersionBar
@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         EventBus.getDefault().register(this)
+        Aria.download(this).register()
         immersionBar {
             titleBar(toolbar)
         }
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             change_rotate.visibility = View.GONE
             setIsTouchWiget(false)
             fullscreen.setOnClickListener {
-                val seekTo = x_player.currentPositionWhenPlaying.toLong();
+                val seekTo = x_player.currentPositionWhenPlaying.toLong()
                 pauseAndHideVideo()
                 VideoActivity.start(
                     this@MainActivity,
@@ -561,8 +562,8 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         JsEngine.unRegister()
+        Aria.download(this).register()
         EventBus.getDefault().unregister(this)
-        unregisterReceiver(receiver)
     }
 
     override fun onStop() {
@@ -590,8 +591,36 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        registerReceiver(receiver, IntentFilter(ISchedulers.ARIA_TASK_INFO_ACTION))
     }
 
-    private val receiver = AriaBroadcastReceiver()
+
+    @Download.onTaskStart
+    fun onTaskStart(task:DownloadTask){
+        S.log("onTaskStart = " + task.key)
+        S.log("onTaskStart = " + task.filePath)
+    }
+
+
+    @Download.onTaskRunning
+    fun onTaskRunning(task:DownloadTask){
+        S.log("onTaskRunning = " + task.convertCurrentProgress + " / " + task.convertFileSize + " / " + task.convertSpeed)
+    }
+
+    @Download.onTaskComplete
+    fun onTaskComplete(task:DownloadTask){
+        S.log("onTaskComplete = " + task.filePath)
+    }
+
+    @Download.onTaskFail
+    fun onTaskFail(task:DownloadTask){
+        S.log("onTaskFail = " + task.key)
+    }
+
+    @Download.onTaskCancel
+    fun onTaskCancel(task:DownloadTask){
+        S.log("onTaskCancel = " + task.key)
+    }
+
+
+
 }

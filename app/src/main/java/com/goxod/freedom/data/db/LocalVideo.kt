@@ -42,7 +42,7 @@ class LocalVideo(@Column(unique = true, defaultValue = "unknown") var url: Strin
         //当视频不为空时判定为下载
         if(favoriteType == FavoriteType.DOWNLOAD.ordinal && video != null){
             taskId = video.url
-            downloadId = DownloadService.download(context,taskId)
+            downloadId = DownloadService.download(context,taskId,item)
             S.log("saveAndNotify DOWNLOAD = $taskId / downloadId = $downloadId")
         }
         save()

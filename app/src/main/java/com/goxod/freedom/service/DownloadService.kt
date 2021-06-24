@@ -4,15 +4,16 @@ import android.content.Context
 import com.arialyy.aria.core.Aria
 import com.arialyy.aria.core.download.DownloadEntity
 import com.arialyy.aria.core.download.m3u8.M3U8VodOption
-import com.arialyy.aria.core.processor.IVodTsUrlConverter
 import com.goxod.freedom.config.type.DownloadEventType
 import com.goxod.freedom.config.type.FavoriteType
 import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.db.LocalVideo
+import com.goxod.freedom.data.entity.PageEntity
 import com.goxod.freedom.data.event.DownloadEvent
 import com.goxod.freedom.utils.S
 import org.greenrobot.eventbus.EventBus
-import java.util.*
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 
 
 object DownloadService {
@@ -69,13 +70,40 @@ object DownloadService {
         EventBus.getDefault().post(DownloadEvent(type, item))
     }
 
-    fun download(context: Context,taskId: String):Long{
+    fun encode(text: String): String {
+        try {
+            //获取md5加密对象
+            val instance: MessageDigest = MessageDigest.getInstance("MD5")
+            //对字符串加密，返回字节数组
+            val digest:ByteArray = instance.digest(text.toByteArray())
+            val sb = StringBuffer()
+            for (b in digest) {
+                //获取低八位有效值
+                val i :Int = b.toInt() and 0xff
+                //将整数转化为16进制
+                var hexString = Integer.toHexString(i)
+                if (hexString.length < 2) {
+                    //如果是一位的话，补0
+                    hexString = "0$hexString"
+                }
+                sb.append(hexString)
+            }
+            return sb.toString()
+
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        }
+        return ""
+    }
+
+    fun download(context: Context,taskId: String,item: PageEntity):Long{
         S.log("DownloadService download = $taskId")
-        val file = context.getExternalFilesDir("video")?.absolutePath + "/V" + System.currentTimeMillis() + ".mp4"
+        val urlToMd5 = encode(item.url)
+        S.log("DownloadService download KEY = $urlToMd5")
+        val file = context.getExternalFilesDir("video")?.absolutePath + "/V" + urlToMd5 + ".mp4"
         if(taskId.endsWith(".m3u8")){
             val option = M3U8VodOption()
-            option.setVodTsUrlConvert(vodTsUrlConverter)
-            option.setMaxTsQueueNum(32)
+            option.setMaxTsQueueNum(10)
             return Aria.download(context).load(taskId).m3u8VodOption(option).setFilePath(file).ignoreFilePathOccupy().create()
         }
         return Aria.download(context).load(taskId).setFilePath(file).ignoreFilePathOccupy().create()
@@ -87,19 +115,5 @@ object DownloadService {
         if(id != null && id > 0) {
             Aria.download(context).load(id).cancel(true)
         }
-    }
-    private val vodTsUrlConverter = IVodTsUrlConverter{
-        m3u8Url, tsUrls ->
-        val host = m3u8Url.substring(0,m3u8Url.lastIndexOf("/")) + "/"
-        val newUrls: MutableList<String> = ArrayList()
-        S.log("host = $host")
-        for (url in tsUrls) {
-            if(url.startsWith("http")){
-                newUrls.add(url)
-            }else{
-                newUrls.add(host + url)
-            }
-        }
-        newUrls // 返回有效的ts文件url集合
     }
 }

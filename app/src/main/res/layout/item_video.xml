@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:background="#90000000"
         android:gravity="center"
-        android:maxLines="1"
+        android:maxLines="3"
         android:padding="3dp"
         android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="@+id/iv_cover" />

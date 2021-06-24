@@ -47,11 +47,7 @@ object XDialog{
                     Beta.checkUpgrade()
                 }
             }
-        val group:ViewGroup = dialog.getCustomView() as ViewGroup
-
-
-
-
+        //val group:ViewGroup = dialog.getCustomView() as ViewGroup
     }
 
     fun close(context: Context){

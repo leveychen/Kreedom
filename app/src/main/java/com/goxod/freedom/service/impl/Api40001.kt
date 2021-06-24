@@ -52,6 +52,7 @@ class Api40001 : ApiAbstract() {
         try {
             val doc = Jsoup
                 .connect(request)
+                .header("Connection", "close")
                 .apply {
                     header("User-Agent", ApiUtil.ua())
                     header("X-Forwarded-For", ApiUtil.ip())

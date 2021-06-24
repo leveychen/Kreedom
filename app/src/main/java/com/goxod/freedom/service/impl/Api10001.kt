@@ -43,6 +43,7 @@ class Api10001 : ApiAbstract() {
         try {
             val doc = Jsoup
                 .connect(request)
+                .header("Connection", "close")
                 .apply {
                     header(
                         "User-Agent",

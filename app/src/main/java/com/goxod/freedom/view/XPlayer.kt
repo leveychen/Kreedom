@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.goxod.freedom.R
 import com.goxod.freedom.config.sp.Sp
+import com.goxod.freedom.config.type.ApiItem
 import com.goxod.freedom.config.type.FavoriteType
 import com.goxod.freedom.data.db.Db
 import com.goxod.freedom.data.entity.SpeedEntity
@@ -31,7 +32,9 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
         add(SpeedEntity("0.5x", 0.5f))
         add(SpeedEntity("1.0x", 1.0f))
         add(SpeedEntity("1.5x", 1.5f))
-        add(SpeedEntity("2.0x", 1.95f))
+        add(SpeedEntity("2.0x", 2.0f))
+        add(SpeedEntity("3.0x", 3.0f))
+        add(SpeedEntity("5.0x", 5.0f))
     }
 
     override fun init(context: Context?) {
@@ -126,17 +129,23 @@ class XPlayer(context: Context?, attrs: AttributeSet?) : StandardGSYVideoPlayer(
                     return@map
                 }
             }
+
             switch_size.text = currentGoods.definition
             if ("本地" == currentGoods.definition) {
                 S.log("已下载,隐藏下载图标")
                 download.visibility = View.GONE
             }else{
-                download.visibility = View.VISIBLE
+                if(item.apiId == ApiItem.API_20001.apiId){
+                    download.visibility = View.VISIBLE
+                }else{
+                    download.visibility = View.GONE
+                }
             }
             //4/10，v3.2.0 下载功能不完善，暂不支持下载，后续开放
-           // download.visibility = View.GONE
+            download.visibility = View.GONE
             fullscreen.visibility = View.VISIBLE
             setUpAndStartPlay(currentGoods.url)
+
         }
     }
 
